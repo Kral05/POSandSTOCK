@@ -19,5 +19,6 @@ public interface MemberDao {
 	
 	//delete
 	void delete(int id);
+	void delete(String username);
 
 }

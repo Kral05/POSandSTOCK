@@ -39,7 +39,7 @@ public class FinishUI extends JFrame {
         contentPane.setLayout(null);
 
         // 加入圖片 JLabel
-        ImageIcon icon = new ImageIcon("/Users/lark/Documents/work2/Deliveryandstock/src/resources/三白茉莉.png");
+        ImageIcon icon = new ImageIcon(PorderMainUI.class.getResource("/三白茉莉.png"));
         Image img = icon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH); // 調整大小
         JLabel lblNewLabel_5 = new JLabel(new ImageIcon(img));
         lblNewLabel_5.setBounds(6, 6, 80, 80);

@@ -1,174 +1,234 @@
 package controller.porder;
 
+import java.awt.Color;
 import java.awt.EventQueue;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import java.awt.Font;
+import java.awt.Image;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import service.impl.PorderServiceImpl;
 import util.Tool;
-import javax.swing.JTextArea;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JScrollPane;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class PorderManagerUI extends JFrame {
 
-	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
-	private JTextField OolongTea;
-	private JTextField BlackTea;
-	private JTextField BuckwheatTea;
-	private JTextField GreenTea;
-	private JTextField deleteId;
-	private static PorderServiceImpl porderserviceimpl = new PorderServiceImpl();
-	private JTextField updateId;
+    private static final long serialVersionUID = 1L;
+    private JPanel contentPane;
+    private JTextField OolongTea;
+    private JTextField BlackTea;
+    private JTextField BuckwheatTea;
+    private JTextField GreenTea;
+    private JTextField deleteId;
+    private static PorderServiceImpl porderserviceimpl = new PorderServiceImpl();
+    private JTextField updateId;
+    private JTextArea output;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					PorderManagerUI frame = new PorderManagerUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+    public static void main(String[] args) {
+        EventQueue.invokeLater(() -> {
+            try {
+                PorderManagerUI frame = new PorderManagerUI();
+                frame.setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
 
-	/**
-	 * Create the frame.
-	 */
-	public PorderManagerUI() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 595, 400); // 調整高度以顯示所有新標籤
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
-		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(6, 6, 220, 200);
-		contentPane.add(scrollPane);
-		
-		JTextArea output = new JTextArea();
-		scrollPane.setViewportView(output);
-		
-		// 修改標籤與變數名稱
-		JLabel lblBuckwheatTea = new JLabel("玄麥茉莉：");
-		lblBuckwheatTea.setBounds(238, 79, 100, 16);
-		contentPane.add(lblBuckwheatTea);
-		
-		JLabel lblBlackTea = new JLabel("赤羽紅茶：");
-		lblBlackTea.setBounds(238, 107, 100, 16);
-		contentPane.add(lblBlackTea);
-		
-		JLabel lblOolongTea = new JLabel("初春青茶：");
-		lblOolongTea.setBounds(238, 135, 100, 16);
-		contentPane.add(lblOolongTea);
-		
-		// 新增 "十薰茉莉" 標籤
-		JLabel lblGreenTea = new JLabel("十薰茉莉：");
-		lblGreenTea.setBounds(238, 163, 100, 16);
-		contentPane.add(lblGreenTea);
+    public PorderManagerUI() {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 100, 840, 550);
+        setLocationRelativeTo(null);
+        contentPane = new JPanel();
+        contentPane.setBackground(new Color(247, 245, 238));  // 與 MemberManagerUI 相同的背景色
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        setContentPane(contentPane);
+        contentPane.setLayout(null);
 
-		// 對應的輸入框
-		BuckwheatTea = new JTextField();
-		BuckwheatTea.setBounds(340, 74, 61, 26);
-		contentPane.add(BuckwheatTea);
-		BuckwheatTea.setColumns(10);
-		
-		BlackTea = new JTextField();
-		BlackTea.setColumns(10);
-		BlackTea.setBounds(340, 102, 61, 26);
-		contentPane.add(BlackTea);
-		
-		OolongTea = new JTextField();
-		OolongTea.setColumns(10);
-		OolongTea.setBounds(340, 130, 61, 26);
-		contentPane.add(OolongTea);
-		
-		GreenTea = new JTextField();
-		GreenTea.setColumns(10);
-		GreenTea.setBounds(340, 158, 61, 26);
-		contentPane.add(GreenTea);
-		
-		// ID 標籤和輸入框
-		JLabel lblId = new JLabel("Id：");
-		lblId.setBounds(417, 135, 61, 16);
-		contentPane.add(lblId);
-		
-		deleteId = new JTextField();
-		deleteId.setColumns(10);
-		deleteId.setBounds(451, 130, 61, 26);
-		contentPane.add(deleteId);
-		
-		JLabel lblId_1 = new JLabel("Id：");
-		lblId_1.setBounds(238, 51, 61, 16);
-		contentPane.add(lblId_1);
-		
-		updateId = new JTextField();
-		updateId.setColumns(10);
-		updateId.setBounds(340, 46, 61, 26);
-		contentPane.add(updateId);
-		
-		// 查詢按鈕
-		JButton btnNewButton = new JButton("查詢");
-		btnNewButton.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				output.setText(porderserviceimpl.AllPorder());
-			}
-		});
-		btnNewButton.setBounds(61, 300, 117, 29);
-		contentPane.add(btnNewButton);
-		
-		// 修改按鈕
-		JButton btnNewButton_1 = new JButton("修改");
-		btnNewButton_1.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				int Id = Integer.parseInt(updateId.getText());
-				int BuckwheatTeaAmount = Integer.parseInt(BuckwheatTea.getText());
-				int BlackTeaAmount = Integer.parseInt(BlackTea.getText());
-				int OolongTeaAmount = Integer.parseInt(OolongTea.getText());
-				int GreenTeaAmount = Integer.parseInt(GreenTea.getText());
-				
-				// 更新訂單
-				porderserviceimpl.updatePorder(BuckwheatTeaAmount, BlackTeaAmount, OolongTeaAmount, GreenTeaAmount, Id);
-			}
-		});
-		btnNewButton_1.setBounds(239, 300, 117, 29);
-		contentPane.add(btnNewButton_1);
-		
-		// 刪除按鈕
-		JButton btnNewButton_2 = new JButton("刪除");
-		btnNewButton_2.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				int Id = Integer.parseInt(deleteId.getText());
-				porderserviceimpl.deletePorderById(Id);
-			}
-		});
-		btnNewButton_2.setBounds(417, 300, 117, 29);
-		contentPane.add(btnNewButton_2);
-		
-		// 回主頁按鈕
-		JButton btnNewButton_3 = new JButton("回主頁");
-		btnNewButton_3.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				Tool.gotoPorderMain();
-				dispose();
-			}
-		});
-		btnNewButton_3.setBounds(472, 3, 117, 29);
-		contentPane.add(btnNewButton_3);
-	}
+        setupHeader();
+        setupOrderArea();
+        setupButtons();
+    }
+
+    private void setupHeader() {
+        // Logo
+        ImageIcon imageIcon = new ImageIcon(getClass().getResource("/三白茉莉.png"));
+        Image image = imageIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        JLabel imageLabel = new JLabel(new ImageIcon(image));
+        imageLabel.setBounds(6, 6, 100, 100);
+        contentPane.add(imageLabel);
+
+        // 標題
+        JLabel titleLabel = new JLabel("訂單資料管理");
+        titleLabel.setForeground(new Color(121, 165, 40));  // 與 MemberManagerUI 相同的標題顏色
+        titleLabel.setFont(new Font("MEllan HK", Font.PLAIN, 25));
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        titleLabel.setBounds(294, 27, 261, 50);
+        contentPane.add(titleLabel);
+    }
+
+    private void setupOrderArea() {
+        // 查詢結果區域
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setBounds(20, 120, 450, 300);  // 與 MemberManagerUI 相同的位置和大小
+        contentPane.add(scrollPane);
+        
+        output = new JTextArea();
+        output.setBackground(Color.WHITE);
+        scrollPane.setViewportView(output);
+        
+        // 修改區域標題
+        JLabel updateTitle = new JLabel("修改訂單");
+        updateTitle.setForeground(new Color(121, 165, 40));
+        updateTitle.setFont(new Font("MEllan HK", Font.PLAIN, 20));
+        updateTitle.setBounds(482, 120, 200, 30);
+        contentPane.add(updateTitle);
+        
+        // 修改區域
+        JLabel lblUpdateId = new JLabel("訂單編號：");
+        lblUpdateId.setBounds(482, 160, 80, 25);
+        contentPane.add(lblUpdateId);
+        
+        updateId = new JTextField();
+        updateId.setBounds(562, 160, 150, 25);
+        contentPane.add(updateId);
+        
+        // 茶品數量輸入區
+        setupTeaInputs();
+        
+        // 刪除區域標題
+        JLabel deleteTitle = new JLabel("刪除訂單");
+        deleteTitle.setForeground(new Color(121, 165, 40));
+        deleteTitle.setFont(new Font("MEllan HK", Font.PLAIN, 20));
+        deleteTitle.setBounds(482, 350, 200, 30);
+        contentPane.add(deleteTitle);
+        
+        // 刪除區域
+        JLabel lblDeleteId = new JLabel("訂單編號：");
+        lblDeleteId.setBounds(482, 390, 80, 25);
+        contentPane.add(lblDeleteId);
+        
+        deleteId = new JTextField();
+        deleteId.setBounds(562, 390, 150, 25);
+        contentPane.add(deleteId);
+    }
+
+    private void setupTeaInputs() {
+        // 茶品數量輸入區
+        JLabel lblBuckwheatTea = new JLabel("玄麥茉莉：");
+        lblBuckwheatTea.setBounds(482, 195, 80, 25);
+        contentPane.add(lblBuckwheatTea);
+        
+        BuckwheatTea = new JTextField();
+        BuckwheatTea.setBounds(562, 195, 150, 25);
+        contentPane.add(BuckwheatTea);
+        
+        JLabel lblBlackTea = new JLabel("赤羽紅茶：");
+        lblBlackTea.setBounds(482, 230, 80, 25);
+        contentPane.add(lblBlackTea);
+        
+        BlackTea = new JTextField();
+        BlackTea.setBounds(562, 230, 150, 25);
+        contentPane.add(BlackTea);
+        
+        JLabel lblOolongTea = new JLabel("初春青茶：");
+        lblOolongTea.setBounds(482, 265, 80, 25);
+        contentPane.add(lblOolongTea);
+        
+        OolongTea = new JTextField();
+        OolongTea.setBounds(562, 265, 150, 25);
+        contentPane.add(OolongTea);
+        
+        JLabel lblGreenTea = new JLabel("十薰茉莉：");
+        lblGreenTea.setBounds(482, 300, 80, 25);
+        contentPane.add(lblGreenTea);
+        
+        GreenTea = new JTextField();
+        GreenTea.setBounds(562, 300, 150, 25);
+        contentPane.add(GreenTea);
+    }
+
+    private void setupButtons() {
+        // 查詢按鈕
+        JButton queryButton = new JButton("查詢");
+        queryButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                output.setText(porderserviceimpl.AllPorder());
+            }
+        });
+        queryButton.setBounds(185, 450, 100, 30);
+        contentPane.add(queryButton);
+        
+        // 修改按鈕
+        JButton updateButton = new JButton("修改");
+        updateButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                try {
+                    int Id = Integer.parseInt(updateId.getText());
+                    int BuckwheatTeaAmount = Integer.parseInt(BuckwheatTea.getText());
+                    int BlackTeaAmount = Integer.parseInt(BlackTea.getText());
+                    int OolongTeaAmount = Integer.parseInt(OolongTea.getText());
+                    int GreenTeaAmount = Integer.parseInt(GreenTea.getText());
+                    
+                    porderserviceimpl.updatePorder(BuckwheatTeaAmount, BlackTeaAmount, 
+                                                 OolongTeaAmount, GreenTeaAmount, Id);
+                    JOptionPane.showMessageDialog(null, "修改成功！");
+                    output.setText(porderserviceimpl.AllPorder());
+                    
+                    // 清空輸入欄位
+                    updateId.setText("");
+                    BuckwheatTea.setText("");
+                    BlackTea.setText("");
+                    OolongTea.setText("");
+                    GreenTea.setText("");
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "請輸入有效的數字！");
+                }
+            }
+        });
+        updateButton.setBounds(724, 155, 100, 30);
+        contentPane.add(updateButton);
+        
+        // 刪除按鈕
+        JButton deleteButton = new JButton("刪除");
+        deleteButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                try {
+                    int Id = Integer.parseInt(deleteId.getText());
+                    int choice = JOptionPane.showConfirmDialog(
+                        null,
+                        "確定要刪除訂單編號 " + Id + " 的資料嗎？",
+                        "確認刪除",
+                        JOptionPane.YES_NO_OPTION
+                    );
+                    
+                    if (choice == JOptionPane.YES_OPTION) {
+                        porderserviceimpl.deletePorderById(Id);
+                        JOptionPane.showMessageDialog(null, "刪除成功！");
+                        output.setText(porderserviceimpl.AllPorder());
+                        deleteId.setText("");
+                    }
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "請輸入有效的訂單編號！");
+                }
+            }
+        });
+        deleteButton.setBounds(724, 388, 100, 30);
+        contentPane.add(deleteButton);
+        
+        // 返回按鈕
+        JButton backButton = new JButton("返回");
+        backButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Tool.gotoPorderMain();
+                dispose();
+            }
+        });
+        backButton.setBounds(724, 6, 100, 30);
+        contentPane.add(backButton);
+    }
 }

@@ -213,4 +213,10 @@ public class MemberDaoImpl implements MemberDao{
         }
 
     }
+
+	@Override
+	public void delete(String username) {
+		// TODO Auto-generated method stub
+		
+	}
 }

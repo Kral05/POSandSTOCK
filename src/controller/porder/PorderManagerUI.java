@@ -160,17 +160,35 @@ public class PorderManagerUI extends JFrame {
         queryButton.setBounds(185, 450, 100, 30);
         contentPane.add(queryButton);
         
-        // 修改按鈕
+     // 修改按鈕
         JButton updateButton = new JButton("修改");
         updateButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 try {
-                    int Id = Integer.parseInt(updateId.getText());
-                    int BuckwheatTeaAmount = Integer.parseInt(BuckwheatTea.getText());
-                    int BlackTeaAmount = Integer.parseInt(BlackTea.getText());
-                    int OolongTeaAmount = Integer.parseInt(OolongTea.getText());
-                    int GreenTeaAmount = Integer.parseInt(GreenTea.getText());
+                    // 先檢查是否有空欄位
+                    if (updateId.getText().trim().isEmpty() ||
+                        BuckwheatTea.getText().trim().isEmpty() ||
+                        BlackTea.getText().trim().isEmpty() ||
+                        OolongTea.getText().trim().isEmpty() ||
+                        GreenTea.getText().trim().isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "所有欄位都必須填寫！");
+                        return;
+                    }
+
+                    // 移除可能的空白字符並轉換為整數
+                    int Id = Integer.parseInt(updateId.getText().trim());
+                    int BuckwheatTeaAmount = Integer.parseInt(BuckwheatTea.getText().trim());
+                    int BlackTeaAmount = Integer.parseInt(BlackTea.getText().trim());
+                    int OolongTeaAmount = Integer.parseInt(OolongTea.getText().trim());
+                    int GreenTeaAmount = Integer.parseInt(GreenTea.getText().trim());
+
+                    // 檢查數量是否為負數
+                    if (BuckwheatTeaAmount < 0 || BlackTeaAmount < 0 || 
+                        OolongTeaAmount < 0 || GreenTeaAmount < 0) {
+                        JOptionPane.showMessageDialog(null, "數量不能為負數！");
+                        return;
+                    }
                     
                     porderserviceimpl.updatePorder(BuckwheatTeaAmount, BlackTeaAmount, 
                                                  OolongTeaAmount, GreenTeaAmount, Id);
@@ -184,20 +202,33 @@ public class PorderManagerUI extends JFrame {
                     OolongTea.setText("");
                     GreenTea.setText("");
                 } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(null, "請輸入有效的數字！");
+                    JOptionPane.showMessageDialog(null, 
+                        "請確認所有欄位都輸入有效的整數！\n" +
+                        "錯誤訊息：" + ex.getMessage());
                 }
             }
         });
         updateButton.setBounds(724, 155, 100, 30);
         contentPane.add(updateButton);
         
-        // 刪除按鈕
+     // 刪除按鈕
         JButton deleteButton = new JButton("刪除");
         deleteButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 try {
-                    int Id = Integer.parseInt(deleteId.getText());
+                    String idText = deleteId.getText().trim();
+                    if (idText.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "請輸入訂單編號！");
+                        return;
+                    }
+
+                    int Id = Integer.parseInt(idText);
+                    if (Id <= 0) {
+                        JOptionPane.showMessageDialog(null, "訂單編號必須大於0！");
+                        return;
+                    }
+
                     int choice = JOptionPane.showConfirmDialog(
                         null,
                         "確定要刪除訂單編號 " + Id + " 的資料嗎？",
@@ -212,7 +243,9 @@ public class PorderManagerUI extends JFrame {
                         deleteId.setText("");
                     }
                 } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(null, "請輸入有效的訂單編號！");
+                    JOptionPane.showMessageDialog(null, 
+                        "請輸入有效的訂單編號！\n" +
+                        "錯誤訊息：" + ex.getMessage());
                 }
             }
         });

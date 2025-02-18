@@ -94,7 +94,10 @@ public class PaymentUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (!successButton.isEnabled()) {
                     JOptionPane.showMessageDialog(PaymentUI.this, "付款了嗎～", "提示", JOptionPane.WARNING_MESSAGE);
-                } else {
+                    return;
+                }
+                
+                try {
                     // 將訂單資料寫入資料庫
                     PorderDao porderDao = new PorderDaoImpl();
 
@@ -111,34 +114,38 @@ public class PaymentUI extends JFrame {
                         switch (drinkName) {
                             case "玄麥茉莉":
                                 greenTeaCount = quantity;
-                                stockService.deductStock("玄麥茉莉", quantity); // 扣除庫存
+                                stockService.deductStock("玄麥茉莉", quantity);
                                 break;
                             case "赤羽紅茶":
                                 blackTeaCount = quantity;
-                                stockService.deductStock("赤羽紅茶", quantity); // 扣除庫存
+                                stockService.deductStock("赤羽紅茶", quantity);
                                 break;
                             case "初春青茶":
                                 oolongTeaCount = quantity;
-                                stockService.deductStock("初春青茶", quantity); // 扣除庫存
+                                stockService.deductStock("初春青茶", quantity);
                                 break;
                             case "十薰茉莉":
                                 buckwheatTeaCount = quantity;
-                                stockService.deductStock("十薰茉莉", quantity); // 扣除庫存
+                                stockService.deductStock("十薰茉莉", quantity);
                                 break;
                         }
                     }
 
-                    // 建立 Porder 物件
+                    // 建立 Porder 物件，處理 member 可能為 null 的情況
+                    String memberName = (member != null) ? member.getName() : "訪客";
                     Porder porder = new Porder(
-                        member.getName(), // 使用會員名稱
+                        memberName,
                         greenTeaCount,
                         blackTeaCount,
                         oolongTeaCount,
                         buckwheatTeaCount,
-                        orderTimestamp // 使用從 FinishUI 傳遞的時間
+                        orderTimestamp
                     );
 
-                    // 先顯示交易完成訊息
+                    // 將訂單寫入資料庫
+                    porderDao.add(porder);
+
+                    // 顯示交易完成訊息
                     JOptionPane.showMessageDialog(PaymentUI.this, 
                         "交易已完成，感謝您的購買！", 
                         "交易成功", 
@@ -147,13 +154,22 @@ public class PaymentUI extends JFrame {
                     // 關閉付款視窗
                     dispose();
 
-                    // 然後檢查庫存
-                    util.StockManager.loadStockFromDatabase();
-                    util.StockManager.checkLowStock();
+                    // 更新並檢查庫存
+                    StockManager.loadStockFromDatabase();
+                    StockManager.checkLowStock();
                     
-                    PorderMainUI mainUI = new PorderMainUI();
-		            mainUI.setVisible(true);
-		            
+                    // 開啟新的 PorderMainUI
+                    EventQueue.invokeLater(() -> {
+                        PorderMainUI mainUI = new PorderMainUI();
+                        mainUI.setVisible(true);
+                    });
+                    
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(PaymentUI.this,
+                        "交易處理過程中發生錯誤：" + ex.getMessage(),
+                        "錯誤",
+                        JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
                 }
             }
         });

@@ -6,6 +6,9 @@ import java.awt.Font;
 import java.awt.Image;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+
 import service.impl.PorderServiceImpl;
 import util.Tool;
 import java.awt.event.MouseAdapter;
@@ -23,6 +26,8 @@ public class PorderManagerUI extends JFrame {
     private static PorderServiceImpl porderserviceimpl = new PorderServiceImpl();
     private JTextField updateId;
     private JTextArea output;
+    private JTable outputTable;
+    private DefaultTableModel tableModel;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -68,14 +73,31 @@ public class PorderManagerUI extends JFrame {
     }
 
     private void setupOrderArea() {
-        // 查詢結果區域
-        JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBounds(20, 120, 450, 300);  // 與 MemberManagerUI 相同的位置和大小
-        contentPane.add(scrollPane);
+        // 表頭設定
+        String[] columnNames = {"會員編號", "玄麥茉莉", "赤羽紅茶", "初春青茶", "十薰茉莉", "總金額"};
+        tableModel = new DefaultTableModel(null, columnNames);
         
-        output = new JTextArea();
-        output.setBackground(Color.WHITE);
-        scrollPane.setViewportView(output);
+        // 創建 JTable
+        outputTable = new JTable(tableModel);
+        outputTable.setBackground(Color.WHITE);
+        outputTable.setFillsViewportHeight(true);  // 設置填滿視口
+
+        // ** 設置表格內容置中 **
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);  // 置中
+        for (int i = 0; i < outputTable.getColumnCount(); i++) {
+            outputTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+        
+        // ** 設置表頭文字置中 **
+        DefaultTableCellRenderer headerRenderer = new DefaultTableCellRenderer();
+        headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);  // 表頭置中
+        outputTable.getTableHeader().setDefaultRenderer(headerRenderer);
+
+        // 設置 JScrollPane 並添加表格
+        JScrollPane scrollPane = new JScrollPane(outputTable);
+        scrollPane.setBounds(20, 120, 450, 300);  // 與原來的位置和大小相同
+        contentPane.add(scrollPane);
         
         // 修改區域標題
         JLabel updateTitle = new JLabel("修改訂單");
@@ -154,13 +176,14 @@ public class PorderManagerUI extends JFrame {
         queryButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                output.setText(porderserviceimpl.AllPorder());
+                String[][] orderData = porderserviceimpl.AllPorderAsArray();  // 確保有這個方法返回表格數據
+                updateTable(orderData);  // 更新表格內容
             }
         });
         queryButton.setBounds(185, 450, 100, 30);
         contentPane.add(queryButton);
         
-     // 修改按鈕
+        // 修改按鈕
         JButton updateButton = new JButton("修改");
         updateButton.addMouseListener(new MouseAdapter() {
             @Override
@@ -263,5 +286,20 @@ public class PorderManagerUI extends JFrame {
         });
         backButton.setBounds(724, 6, 100, 30);
         contentPane.add(backButton);
+    }
+    
+    private void updateTable(String[][] data) {
+        // 清空原有資料
+        tableModel.setRowCount(0);
+        
+        // 新增新的資料，格式化顯示
+        for (String[] row : data) {
+            row[1] = row[1] + " 杯";
+            row[2] = row[2] + " 杯";
+            row[3] = row[3] + " 杯";
+            row[4] = row[4] + " 杯";
+            row[5] = row[5] + " 元";
+            tableModel.addRow(row);
+        }
     }
 }

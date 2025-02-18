@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import model.Member;
@@ -92,6 +93,18 @@ public class MemberManagerUI extends JFrame {
         memberTable.getColumnModel().getColumn(4).setPreferredWidth(150);
         memberTable.getColumnModel().getColumn(5).setPreferredWidth(100);
         
+        // ** 設置表格內容置中 **
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        for (int i = 0; i < memberTable.getColumnCount(); i++) {
+            memberTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+
+        // ** 設置表頭文字置中 **
+        DefaultTableCellRenderer headerRenderer = new DefaultTableCellRenderer();
+        headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        memberTable.getTableHeader().setDefaultRenderer(headerRenderer);
+
         JScrollPane scrollPane = new JScrollPane(memberTable);
         scrollPane.setBounds(20, 120, 450, 300);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -101,19 +114,20 @@ public class MemberManagerUI extends JFrame {
         contentPane.add(scrollPane);
         
         // 修改區域標題
-        JLabel updateTitle = new JLabel("修改訂單");
+        JLabel updateTitle = new JLabel("修改資料");
         updateTitle.setForeground(new Color(121, 165, 40));
         updateTitle.setFont(new Font("MEllan HK", Font.PLAIN, 20));
         updateTitle.setBounds(482, 120, 200, 30);
         contentPane.add(updateTitle);
         
         // 刪除區域標題
-        JLabel deleteTitle = new JLabel("刪除訂單");
+        JLabel deleteTitle = new JLabel("刪除資料");
         deleteTitle.setForeground(new Color(121, 165, 40));
         deleteTitle.setFont(new Font("MEllan HK", Font.PLAIN, 20));
         deleteTitle.setBounds(482, 350, 200, 30);
         contentPane.add(deleteTitle);
     }
+
 
     private void setupUpdateArea() {
         JLabel lblUpdateId = new JLabel("會員編號：");  // 改為會員編號

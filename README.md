@@ -44,7 +44,7 @@ src/
     ├── MarqueePanel.java      # 跑馬燈面板
     ├── PasswordUtil.java      # 密碼處理工具
     ├── PrintUtils.java        # 列印工具
-    ├── RegexUtil.java         # 正則表達式工具
+    ├── RegexUtil.java         # 正規表示法工具
     ├── StockManager.java      # 庫存管理工具
     ├── TextFieldUtil.java     # 文字輸入框工具
     └── Tool.java              # 通用工具類
